@@ -24,7 +24,6 @@ describe('PostThreadCommentUseCas', () => {
     const mockAddedComment = new AddedThreadComment({
       id: 'comment-123',
       content: 'sebuah comment',
-      threadId: 'thread-123',
       owner: 'user-123'
     })
 
@@ -46,7 +45,6 @@ describe('PostThreadCommentUseCas', () => {
     expect(addedComment).toStrictEqual(new AddedThreadComment({
       id: 'comment-123',
       content: 'sebuah comment',
-      threadId: 'thread-123',
       owner: 'user-123'
     }))
 

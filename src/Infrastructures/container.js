@@ -20,6 +20,7 @@ const AuthenticationRepositoryPostgres = require('./repository/AuthenticationRep
 const ThreadRepositoryPostgres = require('./repository/ThreadRepositoryPostgres')
 const ThreadRepository = require('../Domains/threads/ThreadRepository')
 const ThreadCommentRepository = require('../Domains/threadComments/ThreadCommentRepository')
+const ThreadCommentRepositoryPostgres = require('./repository/ThreadCommentRepositoryPostgres')
 
 // use case
 const AddThreadUseCase = require('../Applications/use_case/AddThreadUseCase')
@@ -28,6 +29,7 @@ const LoginUserUseCase = require('../Applications/use_case/LoginUserUseCase')
 const LogoutUserUseCase = require('../Applications/use_case/LogoutUserUseCase')
 const RefreshAuthenticationUseCase = require('../Applications/use_case/RefreshAuthenticationUseCase')
 const AddThreadCommentUseCase = require('../Applications/use_case/AddThreadCommentUseCase')
+const DeleteThreadCommentUseCase = require('../Applications/use_case/DeleteThreadCommenUseCase')
 
 // creating container
 const container = createContainer()
@@ -36,7 +38,7 @@ const container = createContainer()
 container.register([
   {
     key: ThreadCommentRepository.name,
-    Class: ThreadCommentRepository,
+    Class: ThreadCommentRepositoryPostgres,
     parameter: {
       dependencies: [
         {
@@ -113,6 +115,19 @@ container.register([
 
 // registering use cases
 container.register([
+  {
+    key: DeleteThreadCommentUseCase.name,
+    Class: DeleteThreadCommentUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'threadCommentRepository',
+          internal: ThreadCommentRepository.name
+        }
+      ]
+    }
+  },
   {
     key: AddThreadCommentUseCase.name,
     Class: AddThreadCommentUseCase,

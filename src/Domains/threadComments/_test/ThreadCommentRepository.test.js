@@ -7,5 +7,8 @@ describe('threadCommentRepository interface', () => {
 
     // Action and Assert
     await expect(threadCommentRepository.addThreadComment({})).rejects.toThrowError('THREAD_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED')
+    await expect(threadCommentRepository.deleteThreadCommentById({})).rejects.toThrowError('THREAD_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED')
+    await expect(threadCommentRepository.verifyCommentAccess({})).rejects.toThrowError('THREAD_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED')
+    await expect(threadCommentRepository.verifyCommentAtThread({})).rejects.toThrowError('THREAD_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED')
   })
 })

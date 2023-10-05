@@ -20,6 +20,11 @@ exports.up = pgm => {
       type: 'VARCHAR(50)',
       notNull: true
     },
+    is_delete: {
+      type: 'SMALLINT',
+      notNull: true,
+      default: 0
+    },
     date: {
       type: 'TIMESTAMP',
       notNull: true,

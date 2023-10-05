@@ -5,7 +5,7 @@ const AuthenticationTableTestHelper = require('../../../../tests/Authentications
 const container = require('../../container')
 const createServer = require('../createServer')
 
-describe('/users endpoint', () => {
+describe('/threads endpoint', () => {
   afterAll(async () => {
     await pool.end()
   })
@@ -101,6 +101,46 @@ describe('/users endpoint', () => {
       expect(responseJson.status).toEqual('fail')
       expect(responseJson.message).toEqual('tidak dapat membuat thread baru karena tipe data tidak sesuai')
     })
+    it('should response 400 when request payload not contain needed properti', async () => {
+      const requestPayload = {
+        title: 'sebuah thread'
+      }
+      const server = await createServer(container)
+
+      await server.inject({
+        method: 'POST',
+        url: '/users',
+        payload: {
+          username: 'dicoding',
+          password: 'secret',
+          fullname: 'Dicoding Indonesia'
+        }
+      })
+
+      const auth = await server.inject({
+        method: 'POST',
+        url: '/authentications',
+        payload: {
+          username: 'dicoding',
+          password: 'secret'
+        }
+      })
+      const responseAuth = JSON.parse(auth.payload)
+      const { accessToken } = responseAuth.data
+
+      const response = await server.inject({
+        method: 'POST',
+        url: '/threads',
+        payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+      const responseJson = JSON.parse(response.payload)
+      expect(response.statusCode).toEqual(400)
+      expect(responseJson.status).toEqual('fail')
+      expect(responseJson.message).toEqual('harus mengirimkan properti yang sesuai')
+    })
 
     it('should response 401 if user doesnt authentications', async () => {
       const requestPayload = {
@@ -123,7 +163,6 @@ describe('/users endpoint', () => {
         url: '/threads',
         payload: requestPayload
       })
-      console.log(response.payload)
       const responseJson = JSON.parse(response.payload)
       expect(response.statusCode).toEqual(401)
       expect(responseJson.error).toEqual('Unauthorized')

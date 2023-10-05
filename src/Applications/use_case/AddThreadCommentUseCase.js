@@ -9,8 +9,7 @@ class AddThreadCommentUseCase {
   async execute (useCasePayload) {
     const newComment = new NewThreadComment(useCasePayload)
     await this._threadRepository.verifyThreadById(useCasePayload.threadId)
-    console.log({ ...newComment })
-    return this._threadCommentRepository.addThreadComment(newComment)
+    return await this._threadCommentRepository.addThreadComment(newComment)
   }
 }
 module.exports = AddThreadCommentUseCase
