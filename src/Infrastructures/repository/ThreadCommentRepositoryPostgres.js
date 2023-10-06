@@ -43,7 +43,6 @@ class ThreadCommentRepositoryPostgres extends ThreadCommentRepository {
   }
 
   async verifyCommentAccess (commentId, userId) {
-    console.log(userId, commentId)
     const query = {
       text: 'SELECT id FROM comments WHERE id = $1 AND owner = $2',
       values: [commentId, userId]
@@ -52,6 +51,18 @@ class ThreadCommentRepositoryPostgres extends ThreadCommentRepository {
     if (!result.rowCount) {
       throw new AuthorizationError('anda tidak memiliki akses ke sumber')
     }
+  }
+
+  async getCommentByThreadId (threadId) {
+    const query = {
+      text: `SELECT a.id, a.content, a.is_delete, a.date, a.is_delete,
+      b.username FROM comments AS a JOIN users AS b 
+      ON (a.owner = b.id) WHERE a.thread_id = $1 ORDER BY date`,
+      values: [threadId]
+    }
+    const result = await this._pool.query(query)
+    console.log(result.rows)
+    return result.rows
   }
 }
 module.exports = ThreadCommentRepositoryPostgres

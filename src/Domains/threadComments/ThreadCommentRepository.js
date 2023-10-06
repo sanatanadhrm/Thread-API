@@ -14,5 +14,9 @@ class ThreadCommentRepository {
   async verifyCommentAtThread (commentId, threadId) {
     throw new Error('THREAD_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED')
   }
+
+  async getCommentByThreadId (threadId) {
+    throw new Error('THREAD_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED')
+  }
 }
 module.exports = ThreadCommentRepository

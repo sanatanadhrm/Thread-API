@@ -7,6 +7,7 @@ const NewThread = require('../../../Domains/threads/entities/NewThread')
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres')
 const RegisterUser = require('../../../Domains/users/entities/RegisterUser')
 const UserRepositoryPostgres = require('../UserRepositoryPostgres')
+const GetDetailThread = require('../../../Domains/threads/entities/GetDetailThread')
 
 describe('ThreadRepositoryPostgres', () => {
   afterEach(async () => {
@@ -61,6 +62,30 @@ describe('ThreadRepositoryPostgres', () => {
         id: 'thread-234',
         title: 'sebuah thread',
         owner: 'user-234'
+      }))
+    })
+  })
+  describe('getDetailThreadById', () => {
+    it('should return detail thread correctly', async () => {
+      const fakeIdThread = 'thread-123'
+      const threadPayload = {
+        id: fakeIdThread,
+        title: 'sebuah thread',
+        body: 'sebuah body thread',
+        owner: 'user-123'
+      }
+      await UsersTableTestHelper.addUser({ id: threadPayload.owner, username: 'username' })
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {})
+      await ThreadTableTestHelper.addThread(threadPayload)
+
+      const getThread = await threadRepositoryPostgres.getThreadById(fakeIdThread)
+      const dates = getThread.date
+      expect(getThread).toEqual(new GetDetailThread({
+        body: 'sebuah body thread',
+        date: dates,
+        id: 'thread-123',
+        title: 'sebuah thread',
+        username: 'username'
       }))
     })
   })

@@ -11,6 +11,7 @@ const NewThreadComment = require('../../../Domains/threadComments/entities/NewTh
 const AddedThreadComment = require('../../../Domains/threadComments/entities/AddedThreadComment')
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError')
 const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError')
+// const GetComment = require('../../../Domains/threadComments/entities/GetComment')
 
 describe('ThreadCommentRepositoryPostgres', () => {
   afterEach(async () => {
@@ -154,6 +155,22 @@ describe('ThreadCommentRepositoryPostgres', () => {
 
       const comment = await CommentTableTestHelper.findCommentById(commentId)
       expect(comment[0].is_delete).toEqual(1)
+    })
+  })
+  describe('getCommentByThreadId', () => {
+    it('should return detail comment correctly', async () => {
+      await UsersTableTestHelper.addUser({ id: 'user-123' })
+      await ThreadTableTestHelper.addThread({ id: 'thread-123' })
+      await CommentTableTestHelper.addThreadComment({ id: 'comment-123' })
+      await CommentTableTestHelper.addThreadComment({ id: 'comment-234' })
+
+      const commentRepositoryPostgres = new ThreadCommentRepositoryPostgres(pool, {})
+      const comments = await commentRepositoryPostgres.getCommentByThreadId('thread-123')
+      expect(comments).toHaveLength(2)
+      expect(comments[0].id).toEqual('comment-123')
+      expect(comments[0].content).toEqual('sebuah comment')
+      expect(comments[0].is_delete).toEqual(0)
+      expect(comments[0].username).toEqual('dicoding')
     })
   })
 })

@@ -169,4 +169,84 @@ describe('/threads endpoint', () => {
       expect(responseJson.message).toEqual('Missing authentication')
     })
   })
+  describe('when GET /threads/{threadId/', () => {
+    it('should response 200 and get the thread and comments correctly', async () => {
+      const userPayload = {
+        username: 'dicoding',
+        password: 'secret',
+        fullname: 'dicoding indonesia'
+      }
+      const threadPayload = {
+        title: 'sebuah title',
+        body: 'sebuah body'
+      }
+      const commentPayload1 = {
+        content: 'sebuah comment-1'
+      }
+      const commentPayload2 = {
+        content: 'sebuah comment-2'
+      }
+      const server = await createServer(container)
+
+      await server.inject({
+        method: 'POST',
+        url: '/users',
+        payload: userPayload
+      })
+      const auth = await server.inject({
+        method: 'POST',
+        url: '/authentications',
+        payload: {
+          username: 'dicoding',
+          password: 'secret'
+        }
+      })
+      const responseAuth = JSON.parse(auth.payload)
+      const { accessToken } = responseAuth.data
+
+      const thread = await server.inject({
+        method: 'POST',
+        url: '/threads',
+        payload: threadPayload,
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+      const threadJson = JSON.parse(thread.payload)
+      const { addedThread } = threadJson.data
+      console.log(addedThread.id)
+      await server.inject({
+        method: 'POST',
+        url: `/threads/${addedThread.id}/comments`,
+        payload: commentPayload1,
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+      const comment = await server.inject({
+        method: 'POST',
+        url: `/threads/${addedThread.id}/comments`,
+        payload: commentPayload2,
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+      const commentJson = JSON.parse(comment.payload)
+      const { addedComment } = commentJson.data
+      await server.inject({
+        method: 'DELETE',
+        url: `/threads/${addedThread.id}/comments/${addedComment.id}`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/${addedThread.id}`
+      })
+      const responseJson = JSON.parse(response.payload)
+      console.log(responseJson)
+    })
+  })
 })
