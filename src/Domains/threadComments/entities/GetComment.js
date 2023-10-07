@@ -10,13 +10,9 @@ class GetComment {
   }
 
   _verifyPayload ({
-    id, content, date, username
+    id, content, date, username, is_delete: isDelete
   }) {
-    if (!id ||
-      !content ||
-      !date ||
-      !username
-    ) {
+    if (!id || !content || !date || !username) {
       throw new Error('GET_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY')
     }
     if (typeof id !== 'string' || typeof username !== 'string' || typeof content !== 'string') {

@@ -10,9 +10,11 @@ class GetDetailThreadUseCae {
     const { threadId } = useCaseParams
     const thread = new GetDetailThread(await this._threadRepository.getThreadById(threadId))
     let comment = await this._threadCommentRepository.getCommentByThreadId(threadId)
-    if (comment.length > 0) {
-      comment = comment.map((comment) => new GetComment(comment))
-    }
+    comment = comment.map((comment) => {
+      const res = new GetComment(comment)
+      const { id, content, username, date } = res
+      return { id, content, username, date }
+    })
     // Combine thread and comment into the desired output format
     const result = {
       ...thread,
@@ -20,7 +22,7 @@ class GetDetailThreadUseCae {
     }
 
     console.log(result)
-    return { ...thread, comments: comment }
+    return result
   }
 }
 module.exports = GetDetailThreadUseCae

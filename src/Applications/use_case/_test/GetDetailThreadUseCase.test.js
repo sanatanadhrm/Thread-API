@@ -31,7 +31,11 @@ describe('GetDetailThreadUseCase', () => {
         is_delete: 0
       }
     ]
-    detailComment = detailComment.map((comment) => new GetComment(comment))
+    detailComment = detailComment.map((comment) => {
+      const res = new GetComment(comment)
+      const { id, content, username, date } = res
+      return { id, content, username, date }
+    })
     const mockThreadRepository = new ThreadRepository()
     const mockCommentRepository = new ThreadCommentRepository()
 
@@ -60,9 +64,13 @@ describe('GetDetailThreadUseCase', () => {
     })
 
     const getResult = await getDetailThreadUseCase.execute(useCaseParams)
-    console.log({ ...expectThread, comments: detailComment })
+    const result = {
+      ...expectThread,
+      comments: detailComment
+    }
+    console.log(result)
 
-    expect(getResult).toEqual({ ...expectThread, comments: detailComment })
+    expect(getResult).toEqual(result)
     expect(mockThreadRepository.getThreadById).toBeCalledWith(useCaseParams.threadId)
     expect(mockCommentRepository.getCommentByThreadId).toBeCalledWith(useCaseParams.threadId)
   })

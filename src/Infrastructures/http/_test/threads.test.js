@@ -246,7 +246,7 @@ describe('/threads endpoint', () => {
         url: `/threads/${addedThread.id}`
       })
       const responseJson = JSON.parse(response.payload)
-      console.log(responseJson)
+      console.log(typeof responseJson)
     })
   })
 })

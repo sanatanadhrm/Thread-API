@@ -11,7 +11,7 @@ const NewThreadComment = require('../../../Domains/threadComments/entities/NewTh
 const AddedThreadComment = require('../../../Domains/threadComments/entities/AddedThreadComment')
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError')
 const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError')
-// const GetComment = require('../../../Domains/threadComments/entities/GetComment')
+const GetComment = require('../../../Domains/threadComments/entities/GetComment')
 
 describe('ThreadCommentRepositoryPostgres', () => {
   afterEach(async () => {
@@ -169,8 +169,14 @@ describe('ThreadCommentRepositoryPostgres', () => {
       expect(comments).toHaveLength(2)
       expect(comments[0].id).toEqual('comment-123')
       expect(comments[0].content).toEqual('sebuah comment')
-      expect(comments[0].is_delete).toEqual(0)
       expect(comments[0].username).toEqual('dicoding')
+      expect(new GetComment(comments[0])).toStrictEqual(new GetComment({
+        id: 'comment-123',
+        content: 'sebuah comment',
+        is_delete: 0,
+        username: 'dicoding',
+        date: comments[0].date
+      }))
     })
   })
 })

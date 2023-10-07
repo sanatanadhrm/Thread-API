@@ -55,7 +55,7 @@ class ThreadCommentRepositoryPostgres extends ThreadCommentRepository {
 
   async getCommentByThreadId (threadId) {
     const query = {
-      text: `SELECT a.id, a.content, a.is_delete, a.date, a.is_delete,
+      text: `SELECT a.id, a.content, a.is_delete, a.date,
       b.username FROM comments AS a JOIN users AS b 
       ON (a.owner = b.id) WHERE a.thread_id = $1 ORDER BY date`,
       values: [threadId]

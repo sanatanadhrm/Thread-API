@@ -80,7 +80,7 @@ describe('ThreadRepositoryPostgres', () => {
 
       const getThread = await threadRepositoryPostgres.getThreadById(fakeIdThread)
       const dates = getThread.date
-      expect(getThread).toEqual(new GetDetailThread({
+      expect(new GetDetailThread(getThread)).toStrictEqual(new GetDetailThread({
         body: 'sebuah body thread',
         date: dates,
         id: 'thread-123',
