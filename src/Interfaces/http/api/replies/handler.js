@@ -26,6 +26,7 @@ class RepliesHandler {
   async deleteRepliesHandler (request, h) {
     const { id: credentialId } = request.auth.credentials
     const deleteReplies = this._container.getInstance(DeleteRepliesUseCase.name)
+    console.log(request.params)
     await deleteReplies.execute(request.params, credentialId)
     const response = h.response({
       status: 'success'
