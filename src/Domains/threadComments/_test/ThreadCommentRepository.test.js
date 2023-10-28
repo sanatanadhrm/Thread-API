@@ -11,5 +11,7 @@ describe('threadCommentRepository interface', () => {
     await expect(threadCommentRepository.verifyCommentAccess({})).rejects.toThrowError('THREAD_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED')
     await expect(threadCommentRepository.verifyCommentAtThread({})).rejects.toThrowError('THREAD_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED')
     await expect(threadCommentRepository.getCommentByThreadId({})).rejects.toThrowError('THREAD_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED')
+    await expect(threadCommentRepository.reduceLikeComment({})).rejects.toThrowError('THREAD_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED')
+    await expect(threadCommentRepository.addLikeComment({})).rejects.toThrowError('THREAD_COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED')
   })
 })

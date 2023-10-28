@@ -5,6 +5,9 @@ const DomainErrorTranslator = require('../../Commons/exceptions/DomainErrorTrans
 const users = require('../../Interfaces/http/api/users')
 const threads = require('../../Interfaces/http/api/threads')
 const authentications = require('../../Interfaces/http/api/authentications')
+const comments = require('../../Interfaces/http/api/comments')
+const replies = require('../../Interfaces/http/api/replies')
+const likeComments = require('../../Interfaces/http/api/likeComments')
 
 const createServer = async (container) => {
   const server = Hapi.server({
@@ -48,6 +51,18 @@ const createServer = async (container) => {
     },
     {
       plugin: threads,
+      options: { container }
+    },
+    {
+      plugin: comments,
+      options: { container }
+    },
+    {
+      plugin: replies,
+      options: { container }
+    },
+    {
+      plugin: likeComments,
       options: { container }
     }
   ])

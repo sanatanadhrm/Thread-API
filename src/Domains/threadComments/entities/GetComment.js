@@ -1,12 +1,13 @@
 class GetComment {
   constructor (payload) {
     this._verifyPayload(payload)
-    const { id, username, date, content, is_delete: isDelete } = payload
+    const { id, username, date, content, is_delete: isDelete, like_count: likeCount } = payload
     this.id = id
     this.username = username
     this.date = date
     this.isDelete = Number(isDelete)
-    this.content = isDelete === 0 ? content : '***comment dihapus***'
+    this.likeCount = likeCount
+    this.content = isDelete === 0 ? content : '**komentar telah dihapus**'
   }
 
   _verifyPayload ({

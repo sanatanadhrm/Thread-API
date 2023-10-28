@@ -21,6 +21,10 @@ const ThreadRepositoryPostgres = require('./repository/ThreadRepositoryPostgres'
 const ThreadRepository = require('../Domains/threads/ThreadRepository')
 const ThreadCommentRepository = require('../Domains/threadComments/ThreadCommentRepository')
 const ThreadCommentRepositoryPostgres = require('./repository/ThreadCommentRepositoryPostgres')
+const RepliesRepositoryPostgres = require('./repository/RepliesRepositoryPostgres')
+const RepliesRepository = require('../Domains/replies/RepliesRepository')
+const LikeCommentRepositoryPostgres = require('./repository/LikeCommentRepositoryPostgres')
+const LikeCommentsRepository = require('../Domains/likesComments/LikesCommentRepository')
 
 // use case
 const AddThreadUseCase = require('../Applications/use_case/AddThreadUseCase')
@@ -31,12 +35,43 @@ const RefreshAuthenticationUseCase = require('../Applications/use_case/RefreshAu
 const AddThreadCommentUseCase = require('../Applications/use_case/AddThreadCommentUseCase')
 const DeleteThreadCommentUseCase = require('../Applications/use_case/DeleteThreadCommenUseCase')
 const GetDetailThreadUseCase = require('../Applications/use_case/GetDetailThreadUseCase')
+const AddRepliesUseCase = require('../Applications/use_case/AddRepliesUseCase')
+const DeleteRepliesUseCase = require('../Applications/use_case/DeleteRepliesUseCase')
+const LikeCommentUseCase = require('../Applications/use_case/LikeCommentUseCase')
 
 // creating container
 const container = createContainer()
 
 // registering services and repository
 container.register([
+  {
+    key: LikeCommentsRepository.name,
+    Class: LikeCommentRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool
+        },
+        {
+          concrete: nanoid
+        }
+      ]
+    }
+  },
+  {
+    key: RepliesRepository.name,
+    Class: RepliesRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool
+        },
+        {
+          concrete: nanoid
+        }
+      ]
+    }
+  },
   {
     key: ThreadCommentRepository.name,
     Class: ThreadCommentRepositoryPostgres,
@@ -117,11 +152,66 @@ container.register([
 // registering use cases
 container.register([
   {
+    key: LikeCommentUseCase.name,
+    Class: LikeCommentUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'likeCommentRepository',
+          internal: LikeCommentsRepository.name
+        },
+        {
+          name: 'threadCommentRepository',
+          internal: ThreadCommentRepository.name
+        }
+      ]
+    }
+  },
+  {
+    key: DeleteRepliesUseCase.name,
+    Class: DeleteRepliesUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'threadCommentRepository',
+          internal: ThreadCommentRepository.name
+        },
+        {
+          name: 'repliesRepository',
+          internal: RepliesRepository.name
+        }
+      ]
+    }
+  },
+  {
+    key: AddRepliesUseCase.name,
+    Class: AddRepliesUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'threadCommentRepository',
+          internal: ThreadCommentRepository.name
+        },
+        {
+          name: 'repliesRepository',
+          internal: RepliesRepository.name
+        }
+      ]
+    }
+  },
+  {
     key: GetDetailThreadUseCase.name,
     Class: GetDetailThreadUseCase,
     parameter: {
       injectType: 'destructuring',
       dependencies: [
+        {
+          name: 'repliesRepository',
+          internal: RepliesRepository.name
+        },
         {
           name: 'threadCommentRepository',
           internal: ThreadCommentRepository.name

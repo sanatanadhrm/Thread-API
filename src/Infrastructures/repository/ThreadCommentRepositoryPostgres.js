@@ -55,14 +55,31 @@ class ThreadCommentRepositoryPostgres extends ThreadCommentRepository {
 
   async getCommentByThreadId (threadId) {
     const query = {
-      text: `SELECT a.id, a.content, a.is_delete, a.date,
+      text: `SELECT a.id, a.content, a.is_delete, a.date, a.like_count,
       b.username FROM comments AS a JOIN users AS b 
       ON (a.owner = b.id) WHERE a.thread_id = $1 ORDER BY date`,
       values: [threadId]
     }
     const result = await this._pool.query(query)
-    console.log(result.rows)
     return result.rows
+  }
+
+  async reduceLikeComment (commentId) {
+    const query = {
+      text: 'UPDATE comments SET like_count = like_count - 1 WHERE id = $1 RETURNING like_count',
+      values: [commentId]
+    }
+    const result = await this._pool.query(query)
+    return result.rows[0].like_count
+  }
+
+  async addLikeComment (commentId) {
+    const query = {
+      text: 'UPDATE comments SET like_count = like_count + 1 WHERE id = $1 RETURNING like_count',
+      values: [commentId]
+    }
+    const result = await this._pool.query(query)
+    return result.rows[0].like_count
   }
 }
 module.exports = ThreadCommentRepositoryPostgres

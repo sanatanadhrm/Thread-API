@@ -89,4 +89,16 @@ describe('ThreadRepositoryPostgres', () => {
       }))
     })
   })
+  describe('verifyThreadById', () => {
+    it('should throw NotFoundError when thread not available', async () => {
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {})
+      await expect(threadRepositoryPostgres.verifyThreadById('thread-123')).rejects.toThrowError('thread tidak ditemukan')
+    })
+    it('should not throw NotFoundError when thread available', async () => {
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {})
+      await UsersTableTestHelper.addUser({ id: 'user-123' })
+      await ThreadTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' })
+      await expect(threadRepositoryPostgres.verifyThreadById('thread-123')).resolves.not.toThrowError('thread tidak ditemukan')
+    })
+  })
 })

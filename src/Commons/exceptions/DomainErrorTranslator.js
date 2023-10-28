@@ -20,7 +20,9 @@ DomainErrorTranslator._directories = {
   'NEW_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat membuat thread baru karena tipe data tidak sesuai'),
   'NEW_THREAD_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat membuat comment baru karena tipe data tidak sesuai'),
   'NEW_THREAD_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirimkan properti yang sesuai'),
-  'NEW_THREAD.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirimkan properti yang sesuai')
+  'NEW_THREAD.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirimkan properti yang sesuai'),
+  'NEW_REPLIES.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat membuat replies baru karena tipe data tidak sesuai'),
+  'NEW_REPLIES.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirimkan properti yang sesuai')
 }
 
 module.exports = DomainErrorTranslator

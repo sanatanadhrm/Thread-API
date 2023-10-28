@@ -23,7 +23,7 @@ describe('ThreadCommentRepositoryPostgres', () => {
     await pool.end()
   })
   describe('addThreadComment function', () => {
-    it('should persist add comment and return added comment correctly', async () => {
+    it('should add comment to database', async () => {
       const registerUser = new RegisterUser({
         username: 'dicoding',
         password: 'secret_password',
@@ -174,9 +174,42 @@ describe('ThreadCommentRepositoryPostgres', () => {
         id: 'comment-123',
         content: 'sebuah comment',
         is_delete: 0,
+        like_count: 0,
         username: 'dicoding',
         date: comments[0].date
       }))
+    })
+  })
+  describe('addLikeComment function', () => {
+    it('should add like to database', async () => {
+      const threadCommentRepositoryPostgres = new ThreadCommentRepositoryPostgres(pool, {})
+      const commentId = 'comment-123'
+      const userId = 'user-123'
+      const ThreadId = 'thread-123'
+      await UsersTableTestHelper.addUser({ id: userId })
+      await ThreadTableTestHelper.addThread({ id: ThreadId })
+      await CommentTableTestHelper.addThreadComment({ id: commentId })
+
+      await threadCommentRepositoryPostgres.addLikeComment(commentId, userId)
+
+      const comment = await CommentTableTestHelper.findCommentById(commentId)
+      expect(comment[0].like_count).toEqual(1)
+    })
+  })
+  describe('reduceLikeComment function', () => {
+    it('should reduce like to database', async () => {
+      const threadCommentRepositoryPostgres = new ThreadCommentRepositoryPostgres(pool, {})
+      const commentId = 'comment-123'
+      const userId = 'user-123'
+      const ThreadId = 'thread-123'
+      await UsersTableTestHelper.addUser({ id: userId })
+      await ThreadTableTestHelper.addThread({ id: ThreadId })
+      await CommentTableTestHelper.addThreadComment({ id: commentId })
+
+      await threadCommentRepositoryPostgres.reduceLikeComment(commentId, userId)
+
+      const comment = await CommentTableTestHelper.findCommentById(commentId)
+      expect(comment[0].like_count).toEqual(-1)
     })
   })
 })

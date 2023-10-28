@@ -214,7 +214,6 @@ describe('/threads endpoint', () => {
       })
       const threadJson = JSON.parse(thread.payload)
       const { addedThread } = threadJson.data
-      console.log(addedThread.id)
       await server.inject({
         method: 'POST',
         url: `/threads/${addedThread.id}/comments`,
@@ -234,19 +233,38 @@ describe('/threads endpoint', () => {
       const commentJson = JSON.parse(comment.payload)
       const { addedComment } = commentJson.data
       await server.inject({
-        method: 'DELETE',
-        url: `/threads/${addedThread.id}/comments/${addedComment.id}`,
+        method: 'POST',
+        url: `/threads/${addedThread.id}/comments/${addedComment.id}/replies`,
+        payload: {
+          content: 'sebuah reply'
+        },
         headers: {
           Authorization: `Bearer ${accessToken}`
         }
       })
-
+      await server.inject({
+        method: 'PUT',
+        url: `/threads/${addedThread.id}/comments/${addedComment.id}/likes`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+      await server.inject({
+        method: 'PUT',
+        url: `/threads/${addedThread.id}/comments/${addedComment.id}/likes`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
       const response = await server.inject({
         method: 'GET',
         url: `/threads/${addedThread.id}`
       })
       const responseJson = JSON.parse(response.payload)
-      console.log(typeof responseJson)
+      expect(response.statusCode).toEqual(200)
+      expect(responseJson.data.thread).toBeDefined()
+      expect(responseJson.data.thread.comments).toBeDefined()
+      expect(responseJson.data.thread.comments[1].replies).toBeDefined()
     })
   })
 })

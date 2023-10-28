@@ -1,28 +1,23 @@
 const GetComment = require('../../Domains/threadComments/entities/GetComment')
 const GetDetailThread = require('../../Domains/threads/entities/GetDetailThread')
 class GetDetailThreadUseCae {
-  constructor ({ threadCommentRepository, threadRepository }) {
+  constructor ({ threadCommentRepository, threadRepository, repliesRepository }) {
     this._threadCommentRepository = threadCommentRepository
     this._threadRepository = threadRepository
+    this._repliesRepository = repliesRepository
   }
 
   async execute (useCaseParams) {
     const { threadId } = useCaseParams
     const thread = new GetDetailThread(await this._threadRepository.getThreadById(threadId))
     let comment = await this._threadCommentRepository.getCommentByThreadId(threadId)
-    comment = comment.map((comment) => {
-      const res = new GetComment(comment)
-      const { id, content, username, date } = res
-      return { id, content, username, date }
-    })
-    // Combine thread and comment into the desired output format
-    const result = {
-      ...thread,
-      comments: comment
-    }
-
-    console.log(result)
-    return result
+    let reply
+    comment = await Promise.all(comment.map(async (comment) => {
+      const { id, content, username, date, likeCount } = new GetComment(comment)
+      reply = await this._repliesRepository.getRepliesByCommentId(id)
+      return { id, content, username, date, likeCount, replies: reply }
+    }))
+    return { thread: { ...thread, comments: comment } }
   }
 }
 module.exports = GetDetailThreadUseCae
