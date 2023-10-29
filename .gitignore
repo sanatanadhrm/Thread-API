@@ -5,3 +5,5 @@ config/database/test.json
 coverage
 .env
 forum-api-app-server.pem
+forum-api-app-server-v1.pem
+temp.text
